@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Registration Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+      min-height: 100vh; padding: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 500px;
+      animation: slideUp 0.8s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+    }
+    label {
+      margin-top: 15px;
+      display: block;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    input:focus, select:focus {
+      border-color: #74ebd5;
+      outline: none;
+      box-shadow: 0 0 5px rgba(116,235,213,0.5);
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background: #6a11cb;
+      background: linear-gradient(to right, #2575fc, #6a11cb);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    button:hover {
+      transform: scale(1.03);
+    }
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+  
+    .input-icon {
+      position: relative;
+    }
+    .input-icon input {
+      padding-left: 35px;
+    }
+    .input-icon i {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #6a11cb;
+    }
+    input:focus {
+      border: 2px solid #6a11cb;
+      transform: scale(1.02);
+    }
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    width: 100%;
+  }
+  input, select, button {
+    font-size: 1em;
+  }
+  h2, p {
+    font-size: 1.2em;
+  }
+}
+
+@media (min-width: 769px) {
+  .container {
+    max-width: 600px;
+  }
+}
+
+    .input-icon {
+      position: relative;
+    }
+    .input-icon input,
+    .input-icon select {
+      padding-left: 40px;
+    }
+    .input-icon i {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      color: #6a11cb;
+      font-size: 16px;
+    }
+    input:focus, select:focus {
+      border: 2px solid #6a11cb;
+      transform: scale(1.02);
+    }
+    
+    .container {
+        width: 100% !important;
+        max-width: none !important;
+    }
+    </style>
+<style>
+.marquee-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+}
+.marquee-text {
+  display: inline-block;
+  padding-left: 100%;
+  animation: scrollText 15s linear infinite;
+  color: #6a11cb;
+  font-weight: 600;
+}
+@keyframes scrollText {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+</style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+  authDomain: "student-registration-78e89.firebaseapp.com",
+  projectId: "student-registration-78e89",
+  storageBucket: "student-registration-78e89.appspot.com",
+  messagingSenderId: "1085297393358",
+  appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+  measurementId: "G-71K3C34YYY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+window.submitForm = async () => {
+  const studentName = document.getElementById("studentName").value.trim();
+  const fatherName = document.getElementById("fatherName").value.trim();
+  const motherName = document.getElementById("motherName").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const gender = document.getElementById("gender").value;
+  const address = document.getElementById("address").value.trim();
+  const tuitionFee = document.getElementById("tuitionFee").value.trim();
+  const examFee = document.getElementById("examFee").value.trim();
+  const transportFee = document.getElementById("transportFee").value.trim();
+  const dob = document.getElementById("dob").value;
+  const aadhar = document.getElementById("aadhar").value.trim();
+  const classSelect = document.getElementById("classSelect").value;
+  const rollNo = document.getElementById("rollNo").value.trim();
+  const section = document.getElementById("sectionSelect").value;
+
+  if (!studentName || !fatherName || !motherName || !phone || !address || !dob || !aadhar || !gender) {
+    alert("Please fill all required fields correctly.");
+    return;
+  }
+
+  document.getElementById("popupOverlay").style.display = "flex";
+  document.getElementById("popupLoader").style.display = "block";
+  document.getElementById("popupSuccess").style.display = "none";
+
+  try {
+    await addDoc(collection(db, "registrations"), {
+      studentName,
+      fatherName,
+      motherName,
+      phone,
+      gender,
+      address,
+      tuitionFee,
+      examFee,
+      transportFee,
+      dob,
+      aadhar,
+      class: classSelect,
+      rollNo,
+      section,
+      timestamp: new Date()
+    });
+    document.getElementById("form").reset();
+    setTimeout(() => {
+      document.getElementById("popupLoader").style.display = "none";
+      document.getElementById("popupSuccess").style.display = "block";
+    }, 1000);
+    setTimeout(() => {
+      document.getElementById("popupOverlay").style.display = "none";
+    }, 3000);
+  } catch (error) {
+    alert("❌ Error: " + error.message);
+    document.getElementById("popupOverlay").style.display = "none";
+  }
+};
+
+
+document.getElementById("aadhar").addEventListener("input", function (e) {
+  let value = e.target.value.replace(/[^\d]/g, "").substring(0, 12);
+  let formatted = value.match(/.{1,4}/g);
+  e.target.value = formatted ? formatted.join("-") : "";
+});
+</script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/></head>
+<body>
+<!-- Splash Screen with Chanakya Quote -->
+<style>
+#splashScreen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  animation: fadeIn 1s ease-in-out;
+}
+
+#splashQuote {
+  font-size: 20px;
+  max-width: 90%;
+  margin-bottom: 20px;
+  animation: slideUp 1s ease-out;
+}
+
+#splashDev {
+  font-size: 14px;
+  color: #ffeb3b;
+  animation: fadeIn 2s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+</style>
+<div id="splashScreen">
+<div id="splashQuote">"शिक्षा सबसे शक्तिशाली हथियार है जो व्यक्ति को सफलता दिला सकती है।"</div>
+<div id="splashDev">Developed by Udit Narayan Chandra with GPT 4</div>
+</div>
+<script>
+const splashQuotes = [
+  "शिक्षा सबसे शक्तिशाली हथियार है जो व्यक्ति को सफलता दिला सकती है।",
+  "विद्या जीवन को सुगम बनाती है, और अज्ञान उसे कठिन।",
+  "जिसके पास ज्ञान है, वही सच्चा धनवान है।",
+  "शिक्षा एक ऐसी चाबी है जो हर बंद दरवाजे को खोल सकती है।",
+  "जिसे पढ़ना आता है, वह हर स्थिति में समाधान ढूंढ सकता है।",
+  "विद्या और विनय व्यक्ति के सबसे अच्छे आभूषण हैं।",
+  "जो शिक्षा से विमुख है, वह अंधकार में जीता है।"
+];
+
+document.addEventListener("DOMContentLoaded", () => {
+  const quoteBox = document.getElementById("splashQuote");
+  const randomQuote = splashQuotes[Math.floor(Math.random() * splashQuotes.length)];
+  quoteBox.textContent = `"${randomQuote}"`;
+
+  setTimeout(() => {
+    document.getElementById("splashScreen").style.display = "none";
+  }, 4000);
+});
+</script>
+<!-- Animated Chanakya Quote Section -->
+<style>
+  nav {
+    background: linear-gradient(to right, #2575fc, #6a11cb);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin: 8px 12px;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+  nav a:hover {
+    color: #ffeb3b;
+  }
+
+  @media (max-width: 600px) {
+    nav {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    nav a {
+      margin: 5px 0;
+    }
+  }
+</style>
+<nav>
+<a href="index.html">Home</a>
+<a href="#" onclick="openPasswordModal()" style="color: white; text-decoration: none; margin: 8px 12px; font-weight: 600;">Database</a>
+</nav>
+<script>
+function accessDatabase() {
+  const password = prompt("Enter password to access the database:");
+  if (password === "9470260589") {
+    window.location.href = "database.html";
+  } else {
+    alert("❌ Incorrect password!");
+  }
+}
+</script>
+<div class="container" id="mainFormContainer" style="display:none;">
+<h2 style="text-align: center;">Chanakya Academy <i class="fas fa-eye" onclick="openViewModal()" style="cursor:pointer; margin-right:10px;"></i>
+  <i class="fas fa-cog" onclick="openSectionModal()" style="cursor:pointer; margin-left:10px;"></i>
+<i class="fas fa-edit" onclick="openUpdateModal()" style="cursor:pointer; margin-left:10px;"></i>
+
+</h2>
+<div id="sectionSettingsModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:10000;">
+<div style="background:white; padding:30px; border-radius:10px; max-width:450px; width:90%; text-align:center; position:relative;">
+<h3 style="margin-bottom:15px;">Section Settings</h3>
+<div id="sectionLoader" style="display:none; margin-bottom:10px;"><i class="fas fa-spinner fa-spin"></i> Processing...</div>
+<div id="sectionMsg" style="margin-bottom:10px; color:green; font-weight:600;"></div>
+<label>Select Class:</label>
+<select id="modalClassSelect" onchange="loadSectionsForClass()" style="width:100%; padding:10px; margin-bottom:10px;">
+<option value="">Select Class</option>
+<option value="NC">NC</option><option value="LKG">LKG</option><option value="UKG">UKG</option>
+<option value="1">1</option><option value="2">2</option><option value="3">3</option>
+<option value="4">4</option><option value="5">5</option><option value="6">6</option>
+<option value="7">7</option><option value="8">8</option>
+</select>
+<input id="newSectionInput" placeholder="Enter Section (e.g. A)" style="width:100%; padding:10px; margin-bottom:10px;" type="text"/>
+<button onclick="addSection()" style="padding:10px 20px; background-color:#6a11cb; color:white; border:none; border-radius:6px; margin-bottom:15px;">Add Section</button>
+<div id="sectionList" style="margin-top:10px;"></div>
+<button onclick="closeSectionModal()" style="padding:6px 16px; background:#ccc; border:none; border-radius:6px; margin-top:20px;">Close</button>
+</div>
+</div>
+<p style="text-align: center; margin-bottom: 10px;">Ranjita, Harsidhi, East Champaran, Bihar-845422</p>
+<div class="marquee-wrapper">
+<div class="marquee-text">
+    Welcome to Chanakya Academy. Registration is going on. Make sure you have an active internet connection.
+  </div>
+</div>
+<form id="form" onsubmit="event.preventDefault(); submitForm();">
+<label for="studentName">Name of the Student</label>
+<div class="input-icon"><i class="fas fa-user"></i><input id="studentName" required="" type="text"/></div>
+<label for="fatherName">Father's Name</label>
+<div class="input-icon"><i class="fas fa-male"></i><input id="fatherName" required="" type="text"/></div>
+<label for="motherName">Mother's Name</label><div class="input-icon"><i class="fas fa-female"></i><input id="motherName" required="True" type="text"/></div><label for="classSelect">Class</label><div class="input-icon"><i class="fas fa-chalkboard"></i>
+<select id="classSelect" name="class" required="">
+<option value="">Select Class</option>
+<option value="NC">NC</option>
+<option value="LKG">LKG</option>
+<option value="UKG">UKG</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+</select>
+</div>
+<label for="sectionSelect">Section</label>
+<div class="input-icon">
+<i class="fas fa-layer-group"></i>
+<select disabled="" id="sectionSelect" name="section">
+<option value="">Select Section</option>
+</select>
+</div>
+<label for="rollNo">Roll No.</label>
+<div class="input-icon">
+<i class="fas fa-list-ol"></i>
+<input id="rollNo" max="99" maxlength="2" min="1" oninput="limitDigits(this, 2)" placeholder="This is not required, you can add it later" type="number"/>
+</div>
+<label for="phone">Mobile No.</label>
+<div class="input-icon">
+<div class="input-icon"><i class="fas fa-phone"></i><input id="phone" maxlength="10" pattern="\d{10}" required="" style="flex: 1;" type="tel"/></div>
+</div>
+<label for="gender">Gender</label>
+<div class="input-icon">
+<i class="fas fa-venus-mars"></i>
+<select id="gender" name="gender" required="">
+<option value="">Select Gender</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+</select>
+</div>
+<label for="address">Address</label>
+<div class="input-icon"><i class="fas fa-map-marker-alt"></i><input id="address" required="" type="text"/></div>
+<label>Fee Section (Optional)</label>
+<label for="tuitionFee">Tuition Fee</label>
+<input id="tuitionFee" type="number"/>
+<label for="examFee">Examination Fee</label>
+<input id="examFee" type="number"/>
+<label for="transportFee">Transport Fee</label>
+<input id="transportFee" type="number"/>
+<label for="dob">Date of Birth</label>
+<div class="input-icon"><i class="fas fa-calendar"></i><input id="dob" onfocus="(this.type='date')" placeholder="DD/MM/YYYY" type="text"/></div>
+<label for="aadhar">Aadhar No.</label>
+<div class="input-icon"><i class="fas fa-id-card"></i><input id="aadhar" pattern="\d{4}-\d{4}-\d{4}" placeholder="XXXX-XXXX-XXXX" required="" type="text"/></div>
+<button type="submit">Submit</button>
+<div class="success" id="msg"></div>
+</form>
+</div>
+<!-- Password Modal for Database Access -->
+<div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
+<div style="background:#fff; padding:20px 30px; border-radius:10px; text-align:center; width:90%; max-width:400px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+<h3 style="margin-bottom:15px; color:#6a11cb;">Enter Access Password</h3>
+<input id="navPassword" placeholder="Enter password..." style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; margin-bottom:15px;" type="password"/>
+<div style="display:flex; justify-content:space-between;">
+<button onclick="closePasswordModal()" style="background-color:#ccc; color:#000; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Cancel</button>
+<button onclick="checkNavPassword()" style="background-color:#6a11cb; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Submit</button>
+</div>
+</div>
+</div>
+<script>
+// Functions to handle modal
+function openPasswordModal() {
+  document.getElementById('passwordModal').style.display = 'flex';
+}
+function closePasswordModal() {
+  document.getElementById('passwordModal').style.display = 'none';
+}
+function checkNavPassword() {
+  const password = document.getElementById("navPassword").value.trim();
+  if (password === "Vinod@1983") {
+    window.location.href = "database.html";
+  } else {
+    alert("❌ Incorrect password!");
+  }
+}
+
+// Prevent default accessDatabase function if exists
+</script>
+<!-- Login Overlay -->
+<style>
+#loginScreen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: 'Poppins', sans-serif;
+  flex-direction: column;
+}
+
+.login-box {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+  color: #6a11cb;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.login-box button {
+  background: linear-gradient(to right, #2575fc, #6a11cb);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+.login-box button:hover {
+  transform: scale(1.03);
+}
+</style>
+<div id="loginScreen" style="display:none;">
+<div class="login-box">
+<img alt="Chanakya Academy Logo" src="https://i.postimg.cc/bNgNqbC2/Screenshot-2024-07-06-12-09-05-80-removebg-preview.png" style="max-width: 120px; margin-bottom: 15px;"/>
+<h2 style="margin-bottom: 5px;">Chanakya Academy, Ranjita</h2>
+<p style="margin-top: 0; margin-bottom: 15px; font-weight: 500;">Student Registration System</p>
+<input readonly="" type="text" value="Chanakya"/>
+<input id="loginPassword" placeholder="🔒 Enter Password" type="password"/>
+<button onclick="verifyLogin()">🔓 Login</button>
+</div>
+</div>
+<script>
+function verifyLogin() {
+  const enteredPassword = document.getElementById("loginPassword").value.trim();
+  if (enteredPassword === "chanakya@2023") {
+    sessionStorage.setItem("loggedIn", "true");
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("mainFormContainer").style.display = "block";
+  } else {
+    alert("❌ Incorrect Password!");
+  }
+}
+
+setTimeout(() => {
+  document.getElementById("splashScreen").style.display = "none";
+  if (sessionStorage.getItem("loggedIn") === "true") {
+    document.getElementById("mainFormContainer").style.display = "block";
+  } else {
+    document.getElementById("loginScreen").style.display = "flex";
+  }
+}, 4000);
+</script>
+<!-- Loader and Success Popup -->
+<div id="popupOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
+<div id="popupBox" style="background:#fff; padding:30px; border-radius:12px; text-align:center; width:90%; max-width:400px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+<div id="popupLoader">
+<i class="fas fa-spinner fa-spin" style="font-size:40px; color:#6a11cb;"></i>
+<p style="margin-top:10px;">Registering student...</p>
+</div>
+<div id="popupSuccess" style="display:none;">
+<i class="fas fa-check-circle" style="font-size:40px; color:green;"></i>
+<p style="margin-top:10px; font-weight:600;">Student registered successfully!</p>
+</div>
+</div>
+</div>
+<!-- Update Student Details Modal -->
+<div id="updateModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:10000; overflow-y:auto;">
+<div style="background:white; padding:30px; border-radius:10px; max-width:600px; width:90%; max-height:90vh; overflow-y:auto; position:relative;">
+<h3 style="margin-bottom:15px;">Update Student Details</h3>
+<div id="updateLoader" style="display:none; color:#6a11cb; font-weight:500;"><i class="fas fa-spinner fa-spin"></i> Searching...</div>
+<div id="updateMsg" style="margin-bottom:10px; font-weight:600;"></div>
+<label>Select Class:</label>
+<select id="updateClassSelect" style="width:100%; padding:10px; margin-bottom:10px;">
+<option value="">Select Class</option>
+<option value="NC">NC</option><option value="LKG">LKG</option><option value="UKG">UKG</option>
+<option value="1">1</option><option value="2">2</option><option value="3">3</option>
+<option value="4">4</option><option value="5">5</option><option value="6">6</option>
+<option value="7">7</option><option value="8">8</option>
+</select>
+<label>Search by:</label>
+<input id="searchName" placeholder="Student Name" style="width:100%; padding:8px; margin-bottom:8px;" type="text"/>
+<input id="searchFather" placeholder="Father's Name" style="width:100%; padding:8px; margin-bottom:8px;" type="text"/>
+<input id="searchPhone" placeholder="Mobile Number" style="width:100%; padding:8px; margin-bottom:8px;" type="text"/>
+<input id="searchAadhar" placeholder="Aadhar Number" style="width:100%; padding:8px; margin-bottom:12px;" type="text"/>
+<button onclick="searchStudent()" style="padding:10px 20px; background:#6a11cb; color:white; border:none; border-radius:6px;">Search</button>
+<div id="editFormContainer" style="margin-top:20px;"></div>
+<button onclick="closeUpdateModal()" style="margin-top:20px; background:#ccc; border:none; padding:6px 16px; border-radius:6px;">Close</button>
+</div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+  authDomain: "student-registration-78e89.firebaseapp.com",
+  projectId: "student-registration-78e89",
+  storageBucket: "student-registration-78e89.appspot.com",
+  messagingSenderId: "1085297393358",
+  appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+  measurementId: "G-71K3C34YYY"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.loadEditSections = async function () {
+  const cls = document.getElementById("editClass").value;
+  const sectionDropdown = document.getElementById("editSection");
+  sectionDropdown.innerHTML = '<option value="">Select Section</option>';
+  if (!cls) return;
+  const docRef = doc(db, "sectionSettings", "data");
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    const sections = data[cls] || [];
+    sections.forEach(section => {
+      const opt = document.createElement("option");
+      opt.value = section;
+      opt.textContent = section;
+      sectionDropdown.appendChild(opt);
+    });
+  }
+};
+</script>
+<!-- View Students Modal -->
+<div id="viewModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:10000;">
+  <div style="background:white; padding:30px; border-radius:10px; max-width:90vw; width:1000px; max-height:90vh; overflow-y:auto; position:relative;">
+    <h3 style="margin-bottom:15px;">View Students</h3>
+    <label>Select Class:</label>
+    <select id="viewClassSelect" onchange="loadClassData()" style="width:100%; padding:10px; margin-bottom:10px;">
+      <option value="">Select Class</option>
+      <option value="NC">NC</option><option value="LKG">LKG</option><option value="UKG">UKG</option>
+      <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+      <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+      <option value="7">7</option><option value="8">8</option>
+    </select>
+    <input type="text" id="viewSearch" oninput="filterViewTable()" placeholder="Search student..." style="width:100%; padding:8px; margin-bottom:10px; display:none;" />
+    <div id="viewLoader" style="display:none; text-align:center; margin-bottom:10px;"><i class="fas fa-spinner fa-spin" style="color:#6a11cb;"></i> Loading data...</div>
+<div id="viewTableContainer" style="overflow-x:auto;"></div>
+    <button onclick="closeViewModal()" style="margin-top:20px; background:#ccc; border:none; padding:6px 16px; border-radius:6px;">Close</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+  authDomain: "student-registration-78e89.firebaseapp.com",
+  projectId: "student-registration-78e89",
+  storageBucket: "student-registration-78e89.appspot.com",
+  messagingSenderId: "1085297393358",
+  appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+  measurementId: "G-71K3C34YYY"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.openViewModal = function () {
+  document.getElementById("viewModal").style.display = "flex";
+  document.getElementById("viewClassSelect").value = "";
+  document.getElementById("viewSearch").style.display = "none";
+  document.getElementById("viewTableContainer").innerHTML = "";
+}
+
+window.closeViewModal = function () {
+  document.getElementById("viewModal").style.display = "none";
+}
+
+window.loadClassData = async function () {
+  const loaderDiv = document.getElementById("viewLoader");
+  if (loaderDiv) loaderDiv.style.display = "block";
+  const cls = document.getElementById("viewClassSelect").value;
+  const searchInput = document.getElementById("viewSearch");
+  const tableContainer = document.getElementById("viewTableContainer");
+  tableContainer.innerHTML = "";
+  searchInput.style.display = "none";
+
+  if (!cls) return;
+
+  const q = query(collection(db, "registrations"), where("class", "==", cls));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    tableContainer.innerHTML = "<p style='color:red;'>No students found.</p>";
+    return;
+  }
+
+  let students = [];
+  querySnapshot.forEach(doc => {
+    students.push(doc.data());
+  });
+
+  students.sort((a, b) => (parseInt(a.rollNo || 0) || 0) - (parseInt(b.rollNo || 0) || 0));
+
+  
+  const headers = ['Roll No', 'Name', 'Father', 'Mother', 'Section', 'Gender', 'Phone', 'Aadhar', 'DOB', 'Address', 'Tuition Fee', 'Exam Fee', 'Transport Fee'];
+  let html = "<table border='1' style='border-collapse:collapse; width:100%;'>";
+  html += `<thead><tr style='background:#6a11cb; color:white;'><th style='padding:6px;'>Roll No</th><th style='padding:6px;'>Name</th><th style='padding:6px;'>Father</th><th style='padding:6px;'>Mother</th><th style='padding:6px;'>Section</th><th style='padding:6px;'>Gender</th><th style='padding:6px;'>Phone</th><th style='padding:6px;'>Aadhar</th><th style='padding:6px;'>DOB</th><th style='padding:6px;'>Address</th><th style='padding:6px;'>Tuition Fee</th><th style='padding:6px;'>Exam Fee</th><th style='padding:6px;'>Transport Fee</th></tr></thead>`;
+  html += "<tbody>";
+
+  students.forEach(stu => {
+    html += "<tr>";
+    html += `<td style='padding:6px;'>${stu["rollNo"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["studentName"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["fatherName"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["motherName"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["section"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["gender"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["phone"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["aadhar"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["dob"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["address"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["tuitionFee"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["examFee"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["transportFee"] || ""}</td>`;
+    html += "</tr>";
+  });
+
+  html += "</tbody></table>";
+  tableContainer.innerHTML = html;
+  searchInput.style.display = "block";
+  if (loaderDiv) loaderDiv.style.display = "none";
+
+  searchInput.style.display = "block";
+  if (loaderDiv) loaderDiv.style.display = "none";
+};
+
+window.filterViewTable = function () {
+  const input = document.getElementById("viewSearch").value.toLowerCase();
+  const rows = document.querySelectorAll("#viewTableContainer table tbody tr");
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(input) ? "" : "none";
+  });
+}
+</script>
+
+
+<script>
+  window.openViewModal = function () {
+    document.getElementById("viewModal").style.display = "flex";
+    document.getElementById("viewClassSelect").value = "";
+    document.getElementById("viewSearch").style.display = "none";
+    document.getElementById("viewTableContainer").innerHTML = "";
+  };
+
+  window.closeViewModal = function () {
+    document.getElementById("viewModal").style.display = "none";
+  };
+</script>
+
+
+<!-- Update Success Popup -->
+<div id="updateSuccessPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
+  <div style="background:white; padding:30px; border-radius:10px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+    <i class="fas fa-check-circle" style="color:green; font-size:40px;"></i>
+    <p style="margin-top:10px; font-weight:600; color:green;">Student's details updated</p>
+  </div>
+</div>
+
+</body>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+  authDomain: "student-registration-78e89.firebaseapp.com",
+  projectId: "student-registration-78e89",
+  storageBucket: "student-registration-78e89.appspot.com",
+  messagingSenderId: "1085297393358",
+  appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+  measurementId: "G-71K3C34YYY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.openUpdateModal = function () {
+  document.getElementById("updateModal").style.display = "flex";
+  document.getElementById("updateMsg").textContent = "";
+  document.getElementById("editFormContainer").innerHTML = "";
+};
+
+window.closeUpdateModal = function () {
+  document.getElementById("updateModal").style.display = "none";
+};
+
+window.searchStudent = async function () {
+  const cls = document.getElementById("updateClassSelect").value;
+  const name = document.getElementById("searchName").value.trim().toLowerCase().replace(/\s+/g, ' ');
+  const father = document.getElementById("searchFather").value.trim().toLowerCase().replace(/\s+/g, ' ');
+  const phone = document.getElementById("searchPhone").value.trim();
+  const aadhar = document.getElementById("searchAadhar").value.trim().replace(/[^\d]/g, "");
+
+  const msg = document.getElementById("updateMsg");
+  const loader = document.getElementById("updateLoader");
+  const editBox = document.getElementById("editFormContainer");
+  msg.textContent = "";
+  editBox.innerHTML = "";
+
+  if (!cls) {
+    msg.style.color = "red";
+    msg.textContent = "Please select class.";
+    return;
+  }
+
+  loader.style.display = "block";
+  const q = query(collection(db, "registrations"), where("class", "==", cls));
+  const querySnapshot = await getDocs(q);
+
+  let found = null, id = null;
+  querySnapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const studentMatch = data.studentName?.toLowerCase().replace(/\s+/g, ' ') === name && name;
+    const fatherMatch = data.fatherName?.toLowerCase().replace(/\s+/g, ' ') === father && father;
+    const phoneMatch = data.phone === phone && phone;
+    const aadharMatch = data.aadhar?.replace(/[^\d]/g, '') === aadhar && aadhar;
+
+    if (studentMatch || fatherMatch || phoneMatch || aadharMatch) {
+      found = data;
+      id = docSnap.id;
+    }
+  });
+
+  loader.style.display = "none";
+
+  if (!found) {
+    msg.style.color = "red";
+    msg.textContent = "No matching student found.";
+    return;
+  }
+
+  msg.style.color = "green";
+  msg.textContent = "Student found. You can update below.";
+
+  editBox.innerHTML = `
+    <label>Name of Student</label><input type="text" id="editStudentName" value="${found.studentName}" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Father's Name</label><input type="text" id="editFatherName" value="${found.fatherName}" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Mother's Name</label><input type="text" id="editMotherName" value="${found.motherName}" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Class</label>
+    <select id="editClass" onchange="loadEditSections()" style="width:100%; padding:8px; margin-bottom:8px;">
+      <option value="NC" ${found.class === 'NC' ? 'selected' : ''}>NC</option>
+      <option value="LKG" ${found.class === 'LKG' ? 'selected' : ''}>LKG</option>
+      <option value="UKG" ${found.class === 'UKG' ? 'selected' : ''}>UKG</option>
+      <option value="1" ${found.class === '1' ? 'selected' : ''}>1</option>
+      <option value="2" ${found.class === '2' ? 'selected' : ''}>2</option>
+      <option value="3" ${found.class === '3' ? 'selected' : ''}>3</option>
+      <option value="4" ${found.class === '4' ? 'selected' : ''}>4</option>
+      <option value="5" ${found.class === '5' ? 'selected' : ''}>5</option>
+      <option value="6" ${found.class === '6' ? 'selected' : ''}>6</option>
+      <option value="7" ${found.class === '7' ? 'selected' : ''}>7</option>
+      <option value="8" ${found.class === '8' ? 'selected' : ''}>8</option>
+    </select>
+    <label>Section</label><input type="text" id="editSection" value="${found.section}" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Roll No.</label><input type="number" id="editRollNo" value="${found.rollNo}" min="1" max="99" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Gender</label>
+    <select id="editGender" style="width:100%; padding:8px; margin-bottom:8px;">
+      <option value="Male" ${found.gender === 'Male' ? 'selected' : ''}>Male</option>
+      <option value="Female" ${found.gender === 'Female' ? 'selected' : ''}>Female</option>
+    </select>
+    <label>Mobile No.</label><input type="tel" id="editPhone" value="${found.phone}" maxlength="10" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Address</label><input type="text" id="editAddress" value="${found.address}" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Aadhar</label><input type="text" id="editAadhar" value="${found.aadhar}" maxlength="14" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Tuition Fee</label><input type="number" id="editTuitionFee" value="${found.tuitionFee}" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Exam Fee</label><input type="number" id="editExamFee" value="${found.examFee}" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Transport Fee</label><input type="number" id="editTransportFee" value="${found.transportFee}" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <label>Date of Birth</label><input type="text" id="editDob" value="${found.dob}" onfocus="(this.type='date')" placeholder="DD/MM/YYYY" style="width:100%; padding:8px; margin-bottom:8px;" />
+    <button id="updateBtn" onclick="updateStudent('${id}')" style="padding:10px 20px; background:green; color:white; border:none; border-radius:6px;">Update</button>
+`;
+};
+
+window.updateStudent = async function (docId) {
+  const updateBtn = document.getElementById("updateBtn");
+  const originalBtnText = updateBtn.innerHTML;
+  updateBtn.disabled = true;
+  updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+  const msg = document.getElementById("updateMsg");
+  
+  const updates = {
+    studentName: document.getElementById("editStudentName").value.trim(),
+    fatherName: document.getElementById("editFatherName").value.trim(),
+    motherName: document.getElementById("editMotherName").value.trim(),
+    class: document.getElementById("editClass").value.trim(),
+    section: document.getElementById("editSection").value.trim(),
+    rollNo: document.getElementById("editRollNo").value.trim(),
+    gender: document.getElementById("editGender").value.trim(),
+    dob: document.getElementById("editDob").value.trim(),
+    phone: document.getElementById("editPhone").value.trim(),
+    address: document.getElementById("editAddress").value.trim(),
+    aadhar: document.getElementById("editAadhar").value.trim(),
+    tuitionFee: document.getElementById("editTuitionFee").value.trim(),
+    examFee: document.getElementById("editExamFee").value.trim(),
+    transportFee: document.getElementById("editTransportFee").value.trim()
+};
+
+  try {
+    await updateDoc(doc(db, "registrations", docId), updates);
+    updateBtn.disabled = false;
+    updateBtn.innerHTML = originalBtnText;
+    document.getElementById("updateSuccessPopup").style.display = "flex";
+    setTimeout(() => {
+      document.getElementById("updateSuccessPopup").style.display = "none";
+    }, 3000);
+  } catch (err) {
+    msg.style.color = "red";
+    updateBtn.disabled = false;
+    updateBtn.innerHTML = originalBtnText;
+    msg.textContent = "❌ Update failed: " + err.message;
+  }
+};
+</script>
+</html>
+<script>
+function limitDigits(input, maxDigits) {
+  if (input.value.length > maxDigits) {
+    input.value = input.value.slice(0, maxDigits);
+  }
+}
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+  authDomain: "student-registration-78e89.firebaseapp.com",
+  projectId: "student-registration-78e89",
+  storageBucket: "student-registration-78e89.appspot.com",
+  messagingSenderId: "1085297393358",
+  appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+  measurementId: "G-71K3C34YYY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById("classSelect").addEventListener("change", async function () {
+  const selectedClass = this.value;
+  const sectionDropdown = document.getElementById("sectionSelect");
+  sectionDropdown.innerHTML = '<option value="">Select Section</option>';
+  sectionDropdown.disabled = true;
+
+  if (selectedClass) {
+    const docRef = doc(db, "sectionSettings", "data");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const sections = data[selectedClass] || [];
+      sections.forEach(section => {
+        const option = document.createElement("option");
+        option.value = section;
+        option.textContent = section;
+        sectionDropdown.appendChild(option);
+      });
+      if (sections.length) sectionDropdown.disabled = false;
+    }
+  }
+});
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+  authDomain: "student-registration-78e89.firebaseapp.com",
+  projectId: "student-registration-78e89",
+  storageBucket: "student-registration-78e89.appspot.com",
+  messagingSenderId: "1085297393358",
+  appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+  measurementId: "G-71K3C34YYY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.openSectionModal = function () {
+  document.getElementById("sectionSettingsModal").style.display = "flex";
+}
+window.closeSectionModal = function () {
+  document.getElementById("sectionSettingsModal").style.display = "none";
+}
+window.addSection = async function () {
+  const cls = document.getElementById("modalClassSelect").value;
+  const newSec = document.getElementById("newSectionInput").value.trim();
+  if (!cls || !newSec) {
+    alert("Please select class and enter section.");
+    return;
+  }
+
+  const docRef = doc(db, "sectionSettings", "data");
+  const docSnap = await getDoc(docRef);
+  let data = {};
+  if (docSnap.exists()) {
+    data = docSnap.data();
+  }
+
+  if (!data[cls]) data[cls] = [];
+  if (!data[cls].includes(newSec)) data[cls].push(newSec);
+
+  await setDoc(docRef, data);
+  alert("✅ Section added to Firebase for Class " + cls);
+  document.getElementById("newSectionInput").value = "";
+}
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+  authDomain: "student-registration-78e89.firebaseapp.com",
+  projectId: "student-registration-78e89",
+  storageBucket: "student-registration-78e89.appspot.com",
+  messagingSenderId: "1085297393358",
+  appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+  measurementId: "G-71K3C34YYY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.openSectionModal = function () {
+  document.getElementById("sectionSettingsModal").style.display = "flex";
+  document.getElementById("sectionMsg").textContent = "";
+}
+
+window.closeSectionModal = function () {
+  document.getElementById("sectionSettingsModal").style.display = "none";
+}
+
+window.loadSectionsForClass = async function () {
+  const cls = document.getElementById("modalClassSelect").value;
+  const sectionList = document.getElementById("sectionList");
+  sectionList.innerHTML = "";
+  if (!cls) return;
+
+  const docRef = doc(db, "sectionSettings", "data");
+  const docSnap = await getDoc(docRef);
+  if (!docSnap.exists()) return;
+
+  const data = docSnap.data();
+  const sections = data[cls] || [];
+
+  if (sections.length === 0) {
+    sectionList.innerHTML = "<p style='color:#777;'>No sections added for this class.</p>";
+    return;
+  }
+
+  sectionList.innerHTML = "<p style='margin-bottom:8px;'>Existing Sections:</p>";
+  sections.forEach(section => {
+    const div = document.createElement("div");
+    div.style.marginBottom = "6px";
+    div.innerHTML = section + ' <button style="margin-left:10px; padding:2px 8px; background:red; color:white; border:none; border-radius:4px; font-size:12px;" onclick="deleteSection(\'' + section + '\')">Delete</button>';
+    sectionList.appendChild(div);
+  });
+};
+
+window.addSection = async function () {
+  const cls = document.getElementById("modalClassSelect").value;
+  const newSec = document.getElementById("newSectionInput").value.trim();
+  const msg = document.getElementById("sectionMsg");
+  const loader = document.getElementById("sectionLoader");
+  msg.textContent = "";
+  if (!cls || !newSec) {
+    msg.style.color = "red";
+    msg.textContent = "Please select class and enter section.";
+    return;
+  }
+
+  loader.style.display = "block";
+
+  const docRef = doc(db, "sectionSettings", "data");
+  const docSnap = await getDoc(docRef);
+  let data = {};
+  if (docSnap.exists()) data = docSnap.data();
+  if (!data[cls]) data[cls] = [];
+  if (!data[cls].includes(newSec)) data[cls].push(newSec);
+
+  await setDoc(docRef, data);
+  loader.style.display = "none";
+  msg.style.color = "green";
+  msg.textContent = "Section saved successfully.";
+  document.getElementById("newSectionInput").value = "";
+  loadSectionsForClass();
+};
+
+window.deleteSection = async function (sectionToDelete) {
+  const cls = document.getElementById("modalClassSelect").value;
+  const msg = document.getElementById("sectionMsg");
+  const loader = document.getElementById("sectionLoader");
+  msg.textContent = "";
+  loader.style.display = "block";
+
+  const docRef = doc(db, "sectionSettings", "data");
+  const docSnap = await getDoc(docRef);
+  let data = {};
+  if (docSnap.exists()) data = docSnap.data();
+
+  if (data[cls]) {
+    data[cls] = data[cls].filter(sec => sec !== sectionToDelete);
+    await setDoc(docRef, data);
+  }
+
+  loader.style.display = "none";
+  msg.style.color = "green";
+  msg.textContent = "Section deleted successfully.";
+  loadSectionsForClass();
+};
+
+
+
+<!-- View Students Modal -->
+<div id="viewModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:10000;">
+  <div style="background:white; padding:30px; border-radius:10px; max-width:90vw; width:1000px; max-height:90vh; overflow-y:auto; position:relative;">
+    <h3 style="margin-bottom:15px;">View Students</h3>
+    <label>Select Class:</label>
+    <select id="viewClassSelect" onchange="loadClassData()" style="width:100%; padding:10px; margin-bottom:10px;">
+      <option value="">Select Class</option>
+      <option value="NC">NC</option><option value="LKG">LKG</option><option value="UKG">UKG</option>
+      <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+      <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+      <option value="7">7</option><option value="8">8</option>
+    </select>
+    <input type="text" id="viewSearch" oninput="filterViewTable()" placeholder="Search student..." style="width:100%; padding:8px; margin-bottom:10px; display:none;" />
+    <div id="viewLoader" style="display:none; text-align:center; margin-bottom:10px;"><i class="fas fa-spinner fa-spin" style="color:#6a11cb;"></i> Loading data...</div>
+<div id="viewTableContainer" style="overflow-x:auto;"></div>
+    <button onclick="closeViewModal()" style="margin-top:20px; background:#ccc; border:none; padding:6px 16px; border-radius:6px;">Close</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+  authDomain: "student-registration-78e89.firebaseapp.com",
+  projectId: "student-registration-78e89",
+  storageBucket: "student-registration-78e89.appspot.com",
+  messagingSenderId: "1085297393358",
+  appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+  measurementId: "G-71K3C34YYY"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.openViewModal = function () {
+  document.getElementById("viewModal").style.display = "flex";
+  document.getElementById("viewClassSelect").value = "";
+  document.getElementById("viewSearch").style.display = "none";
+  document.getElementById("viewTableContainer").innerHTML = "";
+}
+
+window.closeViewModal = function () {
+  document.getElementById("viewModal").style.display = "none";
+}
+
+window.loadClassData = async function () {
+  const loaderDiv = document.getElementById("viewLoader");
+  if (loaderDiv) loaderDiv.style.display = "block";
+  const cls = document.getElementById("viewClassSelect").value;
+  const searchInput = document.getElementById("viewSearch");
+  const tableContainer = document.getElementById("viewTableContainer");
+  tableContainer.innerHTML = "";
+  searchInput.style.display = "none";
+
+  if (!cls) return;
+
+  const q = query(collection(db, "registrations"), where("class", "==", cls));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    tableContainer.innerHTML = "<p style='color:red;'>No students found.</p>";
+    return;
+  }
+
+  let students = [];
+  querySnapshot.forEach(doc => {
+    students.push(doc.data());
+  });
+
+  students.sort((a, b) => (parseInt(a.rollNo || 0) || 0) - (parseInt(b.rollNo || 0) || 0));
+
+  
+  const headers = ['Roll No', 'Name', 'Father', 'Mother', 'Section', 'Gender', 'Phone', 'Aadhar', 'DOB', 'Address', 'Tuition Fee', 'Exam Fee', 'Transport Fee'];
+  let html = "<table border='1' style='border-collapse:collapse; width:100%;'>";
+  html += `<thead><tr style='background:#6a11cb; color:white;'><th style='padding:6px;'>Roll No</th><th style='padding:6px;'>Name</th><th style='padding:6px;'>Father</th><th style='padding:6px;'>Mother</th><th style='padding:6px;'>Section</th><th style='padding:6px;'>Gender</th><th style='padding:6px;'>Phone</th><th style='padding:6px;'>Aadhar</th><th style='padding:6px;'>DOB</th><th style='padding:6px;'>Address</th><th style='padding:6px;'>Tuition Fee</th><th style='padding:6px;'>Exam Fee</th><th style='padding:6px;'>Transport Fee</th></tr></thead>`;
+  html += "<tbody>";
+
+  students.forEach(stu => {
+    html += "<tr>";
+    html += `<td style='padding:6px;'>${stu["rollNo"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["studentName"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["fatherName"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["motherName"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["section"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["gender"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["phone"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["aadhar"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["dob"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["address"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["tuitionFee"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["examFee"] || ""}</td>`;
+    html += `<td style='padding:6px;'>${stu["transportFee"] || ""}</td>`;
+    html += "</tr>";
+  });
+
+  html += "</tbody></table>";
+  tableContainer.innerHTML = html;
+  searchInput.style.display = "block";
+  if (loaderDiv) loaderDiv.style.display = "none";
+
+  searchInput.style.display = "block";
+  if (loaderDiv) loaderDiv.style.display = "none";
+};
+
+window.filterViewTable = function () {
+  const input = document.getElementById("viewSearch").value.toLowerCase();
+  const rows = document.querySelectorAll("#viewTableContainer table tbody tr");
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(input) ? "" : "none";
+  });
+}
+</script>

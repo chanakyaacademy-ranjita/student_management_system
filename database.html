@@ -1,0 +1,758 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Dashboard</title>
+<style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f9f5ff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #f9f5ff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background: #a64ca6;
+      color: #fff;
+    }
+    button {
+      padding: 6px 12px;
+      margin: 0 4px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #fff;
+    }
+    .edit-btn {
+      background-color: #b57edc;
+    }
+    .save-btn {
+      background-color: #a64ca6;
+    }
+    .delete-btn {
+      background-color: #6e397b;
+    }
+  
+ {
+  height: 100vh;
+  width: 240px;
+  
+  
+  left: 0;
+  background-color: #a64ca6;
+  padding-top: 20px;
+  color: #fff;
+  z-index: 1000;
+}
+ .nav-header {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 20px;
+  border-bottom: 1px solid #555;
+}
+ ul {
+  list-style-type: none;
+  padding: 0;
+}
+ ul li {
+  padding: 12px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+ ul li i {
+  margin-right: 10px;
+}
+ ul li:hover {
+  background-color: #b57edc;
+}
+.main-content {
+  margin-left: 0; width: 100%;
+  padding: 20px;
+}
+
+.home-section {
+  padding: 30px;
+  background: #f9f5ff;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.academy-title {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 5px;
+  color: #3e206d;
+}
+.academy-address {
+  text-align: center;
+  font-size: 16px;
+  color: #a64ca6;
+}
+.session {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #007bff;
+}
+.stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+}
+.stat-box {
+  flex: 1;
+  min-width: 150px;
+  margin: 10px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+}
+.chart-box {
+  flex: 1;
+  min-width: 200px;
+  margin: 10px;
+  text-align: center;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  background: #e9ecef;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+ {
+  
+  
+  
+}
+.main-content {
+  margin-left: 0; width: 100%;
+  padding: 30px;
+  
+  min-height: 100vh;
+  background: #f9f5ff;
+}
+.home-section {
+  background: #f9f5ff;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+body {
+  background: #f9f5ff;
+}
+
+.main-content {
+  margin-left: 0; width: 100%;
+  padding: 30px;
+  
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+table {
+  table-layout: auto;
+  width: 100%;
+  overflow-x: auto;
+  font-size: 15px;
+}
+
+.stats-container {
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.stat-box h2 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.stat-box p {
+  font-size: 14px;
+  color: #555;
+}
+
+.chart-box canvas {
+  max-width: 200px;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 15px;
+  }
+   {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+}
+
+.stat-box p {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #555;
+}
+
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  table, table * {
+    visibility: visible;
+  }
+  table {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+</style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getFirestore, collection, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+  authDomain: "student-registration-78e89.firebaseapp.com",
+  projectId: "student-registration-78e89",
+  storageBucket: "student-registration-78e89.appspot.com",
+  messagingSenderId: "1085297393358",
+  appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+  measurementId: "G-71K3C34YYY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const tableBody = document.getElementById("table-body");
+
+let editingRowId = null;
+
+async function loadData() {
+  const querySnapshot = await getDocs(collection(db, "registrations"));
+  tableBody.innerHTML = "";
+
+  const classOrder = ["NC", "LKG", "UKG", "1", "2", "3", "4", "5", "6", "7", "8"];
+  const students = [];
+
+  querySnapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    students.push({ id: docSnap.id, data });
+  });
+
+  students.sort((a, b) => {
+    return classOrder.indexOf(a.data.class) - classOrder.indexOf(b.data.class);
+  });
+
+  let index = 1;
+  students.forEach(({ id, data }) => {
+    const row = document.createElement("tr");
+    row.setAttribute("data-id", id);
+    row.innerHTML = `
+<td>${index++}</td>
+      <td data-field="studentName">${data.studentName || ""}</td>
+      <td data-field="fatherName">${data.fatherName || ""}</td>
+      <td data-field="motherName">${data.motherName || ""}</td>
+      <td data-field="class">${data.class || ""}</td>
+      <td data-field="section">${data.section || ""}</td>
+      <td data-field="rollNo">${data.rollNo || ""}</td>
+      <td data-field="gender">${data.gender || ""}</td>
+      <td data-field="dob">${data.dob || ""}</td>
+      <td data-field="phone">${data.phone || ""}</td>
+      <td data-field="aadhar">${data.aadhar || ""}</td>
+      <td data-field="address">${data.address || ""}</td>
+      <td data-field="tuitionFee">${data.tuitionFee || ""}</td>
+      <td data-field="examFee">${data.examFee || ""}</td>
+      <td data-field="transportFee">${data.transportFee || ""}</td>
+      <td>
+        <button class="save-btn" onclick="saveRow('${id}')" style="display:none;">Save</button>
+        <button class="delete-btn" onclick="deleteData('${id}')">Delete</button>
+      </td>
+`;
+    tableBody.appendChild(row);
+  });
+
+}
+
+
+
+window.saveRow = async (id) => {
+  const row = document.querySelector(`tr[data-id='${id}']`);
+  const inputs = row.querySelectorAll("input");
+  const updatedData = {
+    studentName: inputs[0].value.trim(),
+    fatherName: inputs[1].value.trim(),
+    motherName: inputs[2].value.trim(),
+    phone: inputs[3].value.trim(),
+    address: inputs[4].value.trim(),
+    tuitionFee: inputs[5].value.trim(),
+    examFee: inputs[6].value.trim(),
+    transportFee: inputs[7].value.trim(),
+    dob: inputs[8].value.trim(),
+    class: row.querySelector(`[data-field="class"] input`).value.trim(),
+    section: row.querySelector(`[data-field="section"] input`).value.trim(),
+    rollNo: row.querySelector(`[data-field="rollNo"] input`).value.trim(),
+    gender: row.querySelector(`[data-field="gender"] input`).value.trim(),
+    aadhar: inputs[10].value.trim()
+  };
+
+  const docRef = doc(db, "registrations", id);
+  await updateDoc(docRef, updatedData);
+  editingRowId = null;
+
+  document.getElementById("save-message").style.display = "block";
+  document.getElementById("save-message").style.animation = "fadeOut 3s forwards";
+  setTimeout(() => {
+    document.getElementById("save-message").style.display = "none";
+  }, 3000);
+
+  loadData();
+};
+
+window.deleteData = async (id) => {
+  if (confirm("Are you sure you want to delete this record?")) {
+    const docRef = doc(db, "registrations", id);
+    await deleteDoc(docRef);
+
+    document.getElementById("save-message").style.display = "block";
+    document.getElementById("save-message").style.animation = "fadeOut 3s forwards";
+    setTimeout(() => {
+      document.getElementById("save-message").style.display = "none";
+    }, 3000);
+
+    loadData();
+  }
+};
+
+window.onload = loadData;
+
+
+
+
+</script>
+<style>
+  #save-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    opacity: 0;
+    animation: fadeOut 3s forwards;
+    z-index: 1000;
+    font-size: 16px;
+  }
+
+  @keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+</style>
+<div id="save-message" style="display:none;"><i class="fas fa-check-circle"></i> Response Saved</div>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
+<style>
+.hidden-row {
+  display: none !important;
+}
+</style>
+<!-- Print Styles for Landscape Orientation and Hiding Actions Column -->
+<style>
+@page {
+  size: landscape;
+}
+@media print {
+  @page {
+    size: landscape;
+  }
+  /* Hide the Actions column (assumed to be last column) */
+  table th:last-child, table td:last-child {
+    display: none !important;
+  }
+  /* Ensure table fits full width */
+  table {
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+<nav style="
+  background: linear-gradient(to right, #2575fc, #6a11cb);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+">
+<a href="index.html" style="color: white; text-decoration: none; margin: 8px 12px; font-weight: 600;">Home</a>
+<a href="#" onclick="openPasswordModal()" style="color: white; text-decoration: none; margin: 8px 12px; font-weight: 600;">Database</a>
+</nav>
+<div class="main-content" id="main-content" style="padding: 30px; width: 100%; min-height: 100vh; box-sizing: border-box;">
+<div class="home-section" id="homeSection">
+<h1 class="academy-title">Chanakya Academy</h1>
+<p class="academy-address">Ranjita, Harsidhi, East Champaran, Bihar-845422</p>
+<!-- SESSION DISPLAY AND EDIT -->
+<p class="session" id="sessionText">
+<i class="fas fa-calendar-alt"></i> Current Session: <span id="sessionValue">Loading...</span>
+<button onclick="editSession()" style="margin-left: 10px; padding: 4px 10px; font-size: 12px; background-color: #007bff; border: none; border-radius: 4px; color: #fff; cursor: pointer;">Edit</button>
+</p>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD3252AzWU33GvusVJHcS4ViWNk6o7g96A",
+    authDomain: "student-registration-78e89.firebaseapp.com",
+    projectId: "student-registration-78e89",
+    storageBucket: "student-registration-78e89.appspot.com",
+    messagingSenderId: "1085297393358",
+    appId: "1:1085297393358:web:592e61147268ceda0f9a9f",
+    measurementId: "G-71K3C34YYY"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const sessionSpan = document.getElementById("sessionValue");
+
+  async function loadSession() {
+    const docRef = doc(db, "settings", "session");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      sessionSpan.textContent = docSnap.data().value;
+    } else {
+      sessionSpan.textContent = "Not Set";
+    }
+  }
+
+  async function editSession() {
+    const password = prompt("Enter password to change session:");
+    if (password !== "chanakya@2023") {
+      alert("Incorrect password.");
+      return;
+    }
+
+    const newSession = prompt("Enter new session (e.g., 2026-27):");
+    if (newSession && newSession.trim()) {
+      const sessionValue = newSession.trim();
+      sessionSpan.textContent = sessionValue;
+
+      const docRef = doc(db, "settings", "session");
+      await setDoc(docRef, { value: sessionValue });
+      alert("Session updated successfully!");
+    }
+  }
+
+  window.editSession = editSession;
+  loadSession();
+</script>
+<div class="stats-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px;">
+<div class="stat-box animate__animated animate__fadeInUp"><i class="fas fa-users" style="font-size: 24px; color: #6a1b9a;"></i><h2 id="totalStudents" style="font-size: 28px; margin: 8px 0; color: #333;">0</h2><p style="margin: 0; font-size: 14px; color: #555;">Total Students</p></div>
+<div class="stat-box animate__animated animate__fadeInUp"><i class="fas fa-male" style="font-size: 24px; color: #6a1b9a;"></i><h2 id="maleStudents" style="font-size: 28px; margin: 8px 0; color: #333;">0</h2><p style="margin: 0; font-size: 14px; color: #555;">Male Students</p></div>
+<div class="stat-box animate__animated animate__fadeInUp"><i class="fas fa-female" style="font-size: 24px; color: #6a1b9a;"></i><h2 id="femaleStudents" style="font-size: 28px; margin: 8px 0; color: #333;">0</h2><p style="margin: 0; font-size: 14px; color: #555;">Female Students</p></div>
+<div class="chart-box animate__animated animate__fadeInRight"><canvas height="150" id="studentChart" width="150"></canvas></div>
+</div>
+</div>
+<div id="studentReportSection" style="display: none;">
+<h2>Student Report</h2>
+<p>Select class or filter to view student data in the table below.</p>
+</div>
+<button onclick="window.print()" style="
+    background-color: #a64ca6; 
+    margin-bottom: 15px;
+    padding: 10px 20px; 
+    border-radius: 6px; 
+    color: #fff; 
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+  "><i class="fas fa-print"></i> Print as PDF</button><div id="classStats" style="margin-bottom: 20px; font-weight: 600; font-size: 15px;"></div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+<input id="studentSearch" onkeyup="searchStudentName()" placeholder="Search Student Name" style="padding: 6px; border-radius: 4px; margin-left: 15px;" type="text"/><div>
+<label for="classFilter" style="font-weight: 600; margin-right: 8px;">Filter by Class:</label>
+<select id="classFilter" onchange="filterByClass()" style="padding: 6px; border-radius: 4px;"><option value="">All</option>
+<option value="NC">NC</option><option value="LKG">LKG</option><option value="UKG">UKG</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+</select>
+</div>
+</div>
+<div style="overflow-x: auto; width: 100%;"><table>
+<thead><tr>
+<th>Serial No.</th>
+<th>Student Name</th>
+<th>Father Name</th>
+<th>Mother Name</th>
+<th>Class</th>
+<th>Section</th>
+<th>Roll No.</th>
+<th>Gender</th>
+<th>DOB</th>
+<th>Phone</th>
+<th>Aadhar</th>
+<th>Address</th>
+<th>Tuition Fee</th>
+<th>Exam Fee</th>
+<th>Transport Fee</th>
+<th>Actions</th>
+</tr></thead>
+<tbody id="table-body"></tbody>
+</table></div>
+<script>
+function updateClassStats() {
+  const rows = document.querySelectorAll("#table-body tr");
+  const counts = {};
+
+  rows.forEach(row => {
+    const classCell = row.querySelector("[data-field='class']");
+    if (classCell) {
+      const classVal = classCell.textContent.trim();
+      if (classVal) {
+        counts[classVal] = (counts[classVal] || 0) + 1;
+      }
+    }
+  });
+
+  const statsDiv = document.getElementById("classStats");
+  if (!Object.keys(counts).length) {
+    statsDiv.textContent = "No class statistics available.";
+    return;
+  }
+
+  const stats = Object.entries(counts)
+    .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
+    .map(([cls, count]) => `Class ${cls}: ${count} student${count > 1 ? 's' : ''}`)
+    .join(" | ");
+
+  statsDiv.textContent = "<i class="fas fa-chart-bar"></i> Class-wise Statistics → " + stats;
+}
+
+// Hook into existing loadData call
+const originalLoadData = window.onload;
+window.onload = async () => {
+  if (typeof originalLoadData === "function") await originalLoadData();
+  updateClassStats();
+};
+</script></div>
+<script>
+function showStudentReport() {
+  document.getElementById("studentReportSection").style.display = "block";
+}
+</script><script>
+function updateHomeStats() {
+  const rows = document.querySelectorAll("#table-body tr");
+  let total = 0, male = 0, female = 0;
+
+  rows.forEach(row => {
+    total++;
+    const gender = row.querySelector("[data-field='gender']").textContent.trim().toLowerCase();
+    if (gender === 'female') female++;
+    else if (gender === 'male') male++;
+    else if (gender === "female") female++;
+  });
+
+  document.getElementById("totalStudents").textContent = total;
+  document.getElementById("maleStudents").textContent = male;
+  document.getElementById("femaleStudents").textContent = female;
+
+  const ctx = document.getElementById("studentChart").getContext("2d");
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Male', 'Female'],
+      datasets: [{
+        data: [male, female],
+        backgroundColor: ['#a64ca6', '#e8c1f5']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+}
+
+// Call this in loadData
+const originalLoadDataFunc = window.onload;
+window.onload = async () => {
+  if (typeof originalLoadDataFunc === "function") await originalLoadDataFunc();
+  updateHomeStats();
+};
+
+
+setInterval(() => {
+  updateHomeStats();
+}, 10000); // update every 10 seconds
+
+function updateTimestamp() {
+  const now = new Date();
+  const formatted = now.toLocaleTimeString();
+  document.getElementById("lastUpdated").textContent = "Last updated: " + formatted;
+}
+
+function updateHomeStats() {
+  const rows = document.querySelectorAll("#table-body tr");
+  let total = 0, male = 0, female = 0;
+
+  rows.forEach(row => {
+    total++;
+    const genderCell = row.querySelector("[data-field='gender']");
+    if (!genderCell) return;
+
+    const gender = genderCell.textContent.trim().toLowerCase();
+    if (gender === "female") female++;
+    else if (gender === "male") male++;
+  });
+
+  document.getElementById("totalStudents").textContent = total;
+  document.getElementById("maleStudents").textContent = male;
+  document.getElementById("femaleStudents").textContent = female;
+
+  const ctx = document.getElementById("studentChart").getContext("2d");
+  if (window.studentChart) window.studentChart.destroy();
+  window.studentChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Male', 'Female'],
+      datasets: [{
+        data: [male, female],
+        backgroundColor: ['#a64ca6', '#e8c1f5']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+
+  updateTimestamp();
+}
+</script>
+<div style="text-align: center; margin: 40px 0;">
+</div>
+<script>
+function filterByClass() {
+  const selectedClass = document.getElementById("classFilter").value.trim();
+  const rows = document.querySelectorAll("#table-body tr");
+  let serial = 1;
+
+  rows.forEach(row => {
+    const classCell = row.querySelector("[data-field='class']");
+    const serialCell = row.querySelector("td"); // Serial No.
+    const studentClass = classCell.textContent.trim();
+
+    if (selectedClass === "" || studentClass === selectedClass) {
+      row.classList.remove("hidden-row");
+      serialCell.textContent = serial++;
+    } else {
+      row.classList.add("hidden-row");
+    }
+  });
+}
+</script>
+<!-- Password Modal -->
+<div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
+<div style="background:#fff; padding:20px 30px; border-radius:10px; text-align:center; width:90%; max-width:400px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+<h3 style="margin-bottom:15px; color:#6a11cb;">Enter Access Password</h3>
+<input id="navPassword" placeholder="Enter password..." style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; margin-bottom:15px;" type="password"/>
+<div style="display:flex; justify-content:space-between;">
+<button onclick="closePasswordModal()" style="background-color:#ccc; color:#000; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Cancel</button>
+<button onclick="checkNavPassword()" style="background-color:#6a11cb; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Submit</button>
+</div>
+</div>
+</div>
+<script>
+function openPasswordModal() {
+  document.getElementById('passwordModal').style.display = 'flex';
+}
+function closePasswordModal() {
+  document.getElementById('passwordModal').style.display = 'none';
+}
+function checkNavPassword() {
+  const password = document.getElementById("navPassword").value.trim();
+  if (password === "Vinod@1983") {
+    window.location.href = "database.html";
+  } else {
+    alert("❌ Incorrect password!");
+  }
+}
+</script>
+<script>
+function searchStudentName() {
+  const input = document.getElementById("studentSearch").value.toLowerCase().trim();
+  const rows = document.querySelectorAll("#table-body tr");
+  let serial = 1;
+
+  rows.forEach(row => {
+    const nameCell = row.querySelector("[data-field='studentName']");
+    const serialCell = row.querySelector("td");
+    if (nameCell && nameCell.textContent.toLowerCase().includes(input)) {
+      row.classList.remove("hidden-row");
+      serialCell.textContent = serial++;
+    } else {
+      row.classList.add("hidden-row");
+    }
+  });
+}
+</script>
+</body>
+</html>
